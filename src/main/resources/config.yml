@@ -1,8 +1,8 @@
 server:
-  id: "my-bungee"
+  id: null
 messages:
   already-connected: "&cAlready connected to this server"
 redis:
-  host: "0.0.0.0"
+  host: "127.0.0.1"
   port: 6379
   password: ""

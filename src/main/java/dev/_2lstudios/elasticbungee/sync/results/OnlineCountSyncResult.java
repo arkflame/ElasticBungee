@@ -1,4 +1,4 @@
-package dev._2lstudios.elasticbungee.sync;
+package dev._2lstudios.elasticbungee.sync.results;
 
 public class OnlineCountSyncResult {
 

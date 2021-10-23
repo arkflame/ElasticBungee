@@ -1,7 +1,7 @@
 package dev._2lstudios.elasticbungee.commands;
 
 import dev._2lstudios.elasticbungee.ElasticBungee;
-import dev._2lstudios.elasticbungee.sync.PlayerSyncResult;
+import dev._2lstudios.elasticbungee.sync.results.PlayerSyncResult;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ComponentBuilder;

@@ -9,7 +9,7 @@ public class RedisStorage {
     public RedisStorage(final String host, final int port, final String password) {
         this.client = new Jedis(host, port);
 
-        if (password != null) {
+        if (password != null && !password.isEmpty()) {
             this.client.auth(password);
         }
 

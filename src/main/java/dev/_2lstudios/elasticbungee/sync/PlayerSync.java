@@ -1,13 +1,14 @@
 package dev._2lstudios.elasticbungee.sync;
 
 import dev._2lstudios.elasticbungee.ElasticBungee;
+import dev._2lstudios.elasticbungee.sync.results.PlayerSyncResult;
 import dev._2lstudios.elasticbungee.utils.MessageUtils;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
-import net.md_5.bungee.api.event.ServerConnectEvent;
+import net.md_5.bungee.api.event.PreLoginEvent;
 import net.md_5.bungee.api.event.ServerConnectedEvent;
 import net.md_5.bungee.api.event.ServerKickEvent;
-import net.md_5.bungee.api.event.ServerConnectEvent.Reason;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
@@ -55,19 +56,18 @@ public class PlayerSync implements Listener {
     }
 
     @EventHandler
-    public void onServerConnect(final ServerConnectEvent e) {
-        if (e.getReason() == Reason.JOIN_PROXY) {
-            if (this.getPlayer(e.getPlayer().getName()) != null) {
-                e.setCancelled(true);
-                e.getPlayer().disconnect(
-                        MessageUtils.format(this.plugin.getConfig().getString("messages.already-connected")));
-            }
+    public void onPlayerPreLogin(final PreLoginEvent e) {
+        if (this.getPlayer(e.getConnection().getName()) != null) {
+            final BaseComponent[] reason = MessageUtils
+                    .format(this.plugin.getConfig().getString("messages.already-connected"));
+            e.setCancelReason(reason);
+            e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onServerConnected(final ServerConnectedEvent e) {
-        this.updatePlayerData(e.getPlayer().getName(), e.getPlayer().getServer().getInfo().getName());
+        this.updatePlayerData(e.getPlayer().getName(), e.getServer().getInfo().getName());
     }
 
     @EventHandler

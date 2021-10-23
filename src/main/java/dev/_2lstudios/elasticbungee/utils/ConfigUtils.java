@@ -30,4 +30,8 @@ public class ConfigUtils {
             }
         }
     }
+
+    public static void saveConfig(final Configuration configuration, final File file) throws IOException {
+        ConfigurationProvider.getProvider(YamlConfiguration.class).save(configuration, file);
+    }
 }

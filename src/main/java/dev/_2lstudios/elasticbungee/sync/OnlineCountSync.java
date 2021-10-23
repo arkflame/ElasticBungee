@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import dev._2lstudios.elasticbungee.ElasticBungee;
 import dev._2lstudios.elasticbungee.redis.RedisMessage;
 import dev._2lstudios.elasticbungee.redis.RedisSubscription;
+import dev._2lstudios.elasticbungee.sync.results.OnlineCountSyncResult;
 import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;

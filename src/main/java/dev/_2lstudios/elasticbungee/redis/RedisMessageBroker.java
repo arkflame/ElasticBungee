@@ -20,7 +20,7 @@ public class RedisMessageBroker {
         this.dispatcher = new Jedis(host, port);
         this.subscriptions = new ArrayList<>();
 
-        if (password != null) {
+        if (password != null && !password.isEmpty()) {
             this.provider.auth(password);
             this.dispatcher.auth(password);
         }

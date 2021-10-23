@@ -10,7 +10,7 @@ import dev._2lstudios.elasticbungee.sync.BroadcastSync;
 import dev._2lstudios.elasticbungee.sync.OnlineCountSync;
 import dev._2lstudios.elasticbungee.sync.PlayerSync;
 import dev._2lstudios.elasticbungee.utils.ConfigUtils;
-
+import dev._2lstudios.elasticbungee.utils.StringUtils;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 
@@ -34,17 +34,18 @@ public class ElasticBungee extends Plugin {
     }
 
     private void init() throws Exception {
-        this.mainConfig = ConfigUtils.getConfig(new File(this.getDataFolder(), "config.yml"));
+        final File configFile = new File(this.getDataFolder(), "config.yml");
+        this.mainConfig = ConfigUtils.getConfig(configFile);
 
         // Setup server
         this.debug = this.mainConfig.getBoolean("debug");
-        this.serverID = this.mainConfig.getString("server.id");
+        this.serverID = this.mainConfig.getString("server.id", "bungee-" + StringUtils.randomString(6));
         this.getLogger().log(Level.INFO, "Defined server id as " + this.serverID);
 
         // Setup message broker and storage
-        final String redisHost = this.mainConfig.getString("message-broker.host");
-        final int redisPort = this.mainConfig.getInt("message-broker.port");
-        final String redisPassword = this.mainConfig.getString("message-broker.password");
+        final String redisHost = this.mainConfig.getString("redis.host");
+        final int redisPort = this.mainConfig.getInt("redis.port");
+        final String redisPassword = this.mainConfig.getString("redis.password");
 
         this.broker = new RedisMessageBroker(redisHost, redisPort, redisPassword);
         this.getLogger().log(Level.INFO, "Connected to redis Message broker");
@@ -72,6 +73,9 @@ public class ElasticBungee extends Plugin {
 
         // Initialize if there are players online
         this.playerSync.sync();
+
+        // Save config after initialize
+        ConfigUtils.saveConfig(this.mainConfig, configFile);
     }
 
     @Override
