@@ -11,6 +11,7 @@ public class ElasticBungeeCommand extends Command {
 
     private final BroadcastCommand broadcastCommand;
     private final FindCommand findCommand;
+    private final KickCommand kickCommand;
 
     private final String version;
 
@@ -19,6 +20,7 @@ public class ElasticBungeeCommand extends Command {
 
         this.broadcastCommand = new BroadcastCommand(plugin);
         this.findCommand = new FindCommand(plugin);
+        this.kickCommand = new KickCommand(plugin);
 
         this.version = plugin.getDescription().getVersion();
     }
@@ -48,6 +50,9 @@ public class ElasticBungeeCommand extends Command {
             break;
         case "find":
             this.findCommand.execute(sender, subArgs);
+            break;
+        case "kick":
+            this.kickCommand.execute(sender, subArgs);
             break;
         default:
             MessageUtils.sendMessage(sender, "&cError: Subcommand " + subCommand + "doesn't exist.");

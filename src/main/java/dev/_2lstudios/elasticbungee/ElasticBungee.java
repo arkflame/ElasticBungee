@@ -7,6 +7,7 @@ import dev._2lstudios.elasticbungee.commands.ElasticBungeeCommand;
 import dev._2lstudios.elasticbungee.redis.RedisMessageBroker;
 import dev._2lstudios.elasticbungee.redis.RedisStorage;
 import dev._2lstudios.elasticbungee.sync.BroadcastSync;
+import dev._2lstudios.elasticbungee.sync.KickSync;
 import dev._2lstudios.elasticbungee.sync.OnlineCountSync;
 import dev._2lstudios.elasticbungee.sync.PlayerSync;
 import dev._2lstudios.elasticbungee.utils.ConfigUtils;
@@ -24,6 +25,7 @@ public class ElasticBungee extends Plugin {
     private RedisStorage storage;
 
     private BroadcastSync broadcastSync;
+    private KickSync kickSync;
     private OnlineCountSync onlineCountSync;
     private PlayerSync playerSync;
 
@@ -54,6 +56,14 @@ public class ElasticBungee extends Plugin {
         this.getLogger().log(Level.INFO, "Connected to redis Storage Container");
 
         // Setup sync modules
+        this.broadcastSync = new BroadcastSync(this);
+        this.broker.subscribe(broadcastSync);
+        this.getLogger().log(Level.INFO, "Registered module BroadcastSync");
+
+        this.kickSync = new KickSync(this);
+        this.broker.subscribe(kickSync);
+        this.getLogger().log(Level.INFO, "Registered module KickSync");
+
         this.onlineCountSync = new OnlineCountSync(this);
         this.broker.subscribe(onlineCountSync);
         this.getProxy().getPluginManager().registerListener(this, onlineCountSync);
@@ -62,10 +72,6 @@ public class ElasticBungee extends Plugin {
         this.playerSync = new PlayerSync(this);
         this.getProxy().getPluginManager().registerListener(this, playerSync);
         this.getLogger().log(Level.INFO, "Registered module PlayerSync");
-
-        this.broadcastSync = new BroadcastSync(this);
-        this.broker.subscribe(broadcastSync);
-        this.getLogger().log(Level.INFO, "Registered module BroadcastSync");
 
         // Register commands
         this.getProxy().getPluginManager().registerCommand(this, new ElasticBungeeCommand(this));
@@ -103,6 +109,10 @@ public class ElasticBungee extends Plugin {
 
     public BroadcastSync getBroadcastSync() {
         return this.broadcastSync;
+    }
+
+    public KickSync getKickSync() {
+        return this.kickSync;
     }
 
     public RedisMessageBroker getMessageBroker() {
