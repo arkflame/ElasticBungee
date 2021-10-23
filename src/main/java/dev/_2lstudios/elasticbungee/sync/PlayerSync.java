@@ -1,5 +1,7 @@
 package dev._2lstudios.elasticbungee.sync;
 
+import java.net.InetSocketAddress;
+
 import dev._2lstudios.elasticbungee.ElasticBungee;
 import dev._2lstudios.elasticbungee.sync.results.PlayerSyncResult;
 import dev._2lstudios.elasticbungee.utils.MessageUtils;
@@ -22,7 +24,7 @@ public class PlayerSync implements Listener {
         this.plugin = plugin;
     }
 
-    private void updatePlayerData(final String username, final String server) {
+    private void updatePlayerData(final String username, final String server, final String address) {
         final String key = QUERY_PREFIX + username.toLowerCase();
 
         if (server == null || server.isEmpty()) {
@@ -30,19 +32,30 @@ public class PlayerSync implements Listener {
             return;
         }
 
-        final PlayerSyncResult result = new PlayerSyncResult(this.plugin.getServerID(), server);
+        final PlayerSyncResult result = new PlayerSyncResult(this.plugin.getServerID(), server, address);
         this.plugin.getStorage().set(key, result.toString());
+    }
+
+    public void syncPlayer(final ProxiedPlayer player, final String server) {
+        final String username = player.getName();
+        final String address = ((InetSocketAddress) player.getSocketAddress()).getAddress().toString();
+
+        this.updatePlayerData(username, server, address);
+    }
+
+    public void syncPlayer(final ProxiedPlayer player) {
+        this.syncPlayer(player, player.getServer().getInfo().getName());
     }
 
     public void sync() {
         for (final ProxiedPlayer player : this.plugin.getProxy().getPlayers()) {
-            this.updatePlayerData(player.getName(), player.getServer().getInfo().getName());
+            this.syncPlayer(player);
         }
     }
 
     public void cleanup() {
         for (final ProxiedPlayer player : this.plugin.getProxy().getPlayers()) {
-            this.updatePlayerData(player.getName(), null);
+            this.updatePlayerData(player.getName(), null, null);
         }
     }
 
@@ -67,16 +80,16 @@ public class PlayerSync implements Listener {
 
     @EventHandler
     public void onServerConnected(final ServerConnectedEvent e) {
-        this.updatePlayerData(e.getPlayer().getName(), e.getServer().getInfo().getName());
+        this.syncPlayer(e.getPlayer(), e.getServer().getInfo().getName());
     }
 
     @EventHandler
     public void onPlayerQuit(final PlayerDisconnectEvent e) {
-        this.updatePlayerData(e.getPlayer().getName(), null);
+        this.updatePlayerData(e.getPlayer().getName(), null, null);
     }
 
     @EventHandler
     public void onPlayerKick(final ServerKickEvent e) {
-        this.updatePlayerData(e.getPlayer().getName(), null);
+        this.updatePlayerData(e.getPlayer().getName(), null, null);
     }
 }
