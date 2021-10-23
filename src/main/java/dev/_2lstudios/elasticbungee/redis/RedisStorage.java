@@ -1,9 +1,8 @@
-package dev._2lstudios.elasticbungee.storage;
+package dev._2lstudios.elasticbungee.redis;
 
-import dev._2lstudios.elasticbungee.api.storage.StorageContainer;
 import redis.clients.jedis.Jedis;
 
-public class RedisStorage implements StorageContainer {
+public class RedisStorage {
 
     private final Jedis client; // Redis client used to store data;
 
@@ -17,17 +16,14 @@ public class RedisStorage implements StorageContainer {
         this.client.ping();
     }
 
-    @Override
     public String get(String key) {
         return this.client.get(key);
     }
 
-    @Override
     public void set(String key, String value) {
         this.client.set(key, value);
     }
 
-    @Override
     public void delete(String key) {
         this.client.del(key);
     }

@@ -1,12 +1,12 @@
 package dev._2lstudios.elasticbungee.sync;
 
 import dev._2lstudios.elasticbungee.ElasticBungee;
-import dev._2lstudios.elasticbungee.api.broker.Message;
-import dev._2lstudios.elasticbungee.api.broker.Subscription;
+import dev._2lstudios.elasticbungee.redis.RedisMessage;
+import dev._2lstudios.elasticbungee.redis.RedisSubscription;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 
-public class BroadcastSync implements Subscription {
+public class BroadcastSync implements RedisSubscription {
     public final static String CHANNEL = "broadcast";
 
     private final ElasticBungee plugin;
@@ -20,7 +20,7 @@ public class BroadcastSync implements Subscription {
     }
 
     @Override
-    public void onReceive(final Message message) {
+    public void onReceive(final RedisMessage message) {
         if (!message.getChannel().equals(CHANNEL)) {
             return;
         }

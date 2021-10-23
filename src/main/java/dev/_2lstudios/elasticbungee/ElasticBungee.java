@@ -3,27 +3,25 @@ package dev._2lstudios.elasticbungee;
 import java.io.File;
 import java.util.logging.Level;
 
-import dev._2lstudios.elasticbungee.api.broker.MessageBroker;
-import dev._2lstudios.elasticbungee.api.storage.StorageContainer;
-import dev._2lstudios.elasticbungee.broker.BrokerFactory;
 import dev._2lstudios.elasticbungee.commands.ElasticBungeeCommand;
-import dev._2lstudios.elasticbungee.storage.StorageFactory;
+import dev._2lstudios.elasticbungee.redis.RedisMessageBroker;
+import dev._2lstudios.elasticbungee.redis.RedisStorage;
 import dev._2lstudios.elasticbungee.sync.BroadcastSync;
 import dev._2lstudios.elasticbungee.sync.OnlineCountSync;
 import dev._2lstudios.elasticbungee.sync.PlayerSync;
 import dev._2lstudios.elasticbungee.utils.ConfigUtils;
+
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 
 public class ElasticBungee extends Plugin {
-
     private Configuration mainConfig;
 
     private boolean debug;
     private String serverID;
 
-    private MessageBroker broker;
-    private StorageContainer storage;
+    private RedisMessageBroker broker;
+    private RedisStorage storage;
 
     private BroadcastSync broadcastSync;
     private OnlineCountSync onlineCountSync;
@@ -43,23 +41,16 @@ public class ElasticBungee extends Plugin {
         this.serverID = this.mainConfig.getString("server.id");
         this.getLogger().log(Level.INFO, "Defined server id as " + this.serverID);
 
-        // Setup message broker
-        final String brokerDriver = this.mainConfig.getString("message-broker.driver");
-        final String brokerHost = this.mainConfig.getString("message-broker.host");
-        final int brokerPort = this.mainConfig.getInt("message-broker.port");
-        final String brokerPassword = this.mainConfig.getString("message-broker.password");
+        // Setup message broker and storage
+        final String redisHost = this.mainConfig.getString("message-broker.host");
+        final int redisPort = this.mainConfig.getInt("message-broker.port");
+        final String redisPassword = this.mainConfig.getString("message-broker.password");
 
-        this.broker = BrokerFactory.craftBroker(brokerDriver, brokerHost, brokerPort, brokerPassword);
-        this.getLogger().log(Level.INFO, "Connected to Message broker using driver " + brokerDriver);
+        this.broker = new RedisMessageBroker(redisHost, redisPort, redisPassword);
+        this.getLogger().log(Level.INFO, "Connected to redis Message broker");
 
-        // Setup storage container
-        final String storageDriver = this.mainConfig.getString("storage-container.driver");
-        final String storageHost = this.mainConfig.getString("storage-container.host");
-        final int storagePort = this.mainConfig.getInt("storage-container.port");
-        final String storagePassword = this.mainConfig.getString("storage-container.password");
-
-        this.storage = StorageFactory.craftStorage(storageDriver, storageHost, storagePort, storagePassword);
-        this.getLogger().log(Level.INFO, "Connected to Storage container using driver " + storageDriver);
+        this.storage = new RedisStorage(redisHost, redisPort, redisPassword);
+        this.getLogger().log(Level.INFO, "Connected to redis Storage Container");
 
         // Setup sync modules
         this.onlineCountSync = new OnlineCountSync(this);
@@ -102,15 +93,19 @@ public class ElasticBungee extends Plugin {
         this.playerSync.cleanup();
     }
 
+    public Configuration getConfig() {
+        return this.mainConfig;
+    }
+
     public BroadcastSync getBroadcastSync() {
         return this.broadcastSync;
     }
 
-    public MessageBroker getMessageBroker() {
+    public RedisMessageBroker getMessageBroker() {
         return this.broker;
     }
 
-    public StorageContainer getStorage() {
+    public RedisStorage getStorage() {
         return this.storage;
     }
 

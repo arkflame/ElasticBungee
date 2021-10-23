@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import dev._2lstudios.elasticbungee.ElasticBungee;
-import dev._2lstudios.elasticbungee.api.broker.Message;
-import dev._2lstudios.elasticbungee.api.broker.Subscription;
+import dev._2lstudios.elasticbungee.redis.RedisMessage;
+import dev._2lstudios.elasticbungee.redis.RedisSubscription;
 import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
@@ -14,7 +14,7 @@ import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
-public class OnlineCountSync implements Listener, Subscription {
+public class OnlineCountSync implements Listener, RedisSubscription {
     public final static String CHANNEL = "sync";
 
     private final ElasticBungee plugin;
@@ -95,7 +95,7 @@ public class OnlineCountSync implements Listener, Subscription {
 
     /* Broker listener */
     @Override
-    public void onReceive(final Message message) {
+    public void onReceive(final RedisMessage message) {
         if (!message.getChannel().equals(CHANNEL)) {
             return;
         }

@@ -1,10 +1,13 @@
 package dev._2lstudios.elasticbungee.sync;
 
 import dev._2lstudios.elasticbungee.ElasticBungee;
+import dev._2lstudios.elasticbungee.utils.MessageUtils;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.ServerConnectEvent;
+import net.md_5.bungee.api.event.ServerConnectedEvent;
 import net.md_5.bungee.api.event.ServerKickEvent;
+import net.md_5.bungee.api.event.ServerConnectEvent.Reason;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
@@ -52,8 +55,19 @@ public class PlayerSync implements Listener {
     }
 
     @EventHandler
-    public void onPostLogin(final ServerConnectEvent e) {
-        this.updatePlayerData(e.getPlayer().getName(), e.getTarget().getName());
+    public void onServerConnect(final ServerConnectEvent e) {
+        if (e.getReason() == Reason.JOIN_PROXY) {
+            if (this.getPlayer(e.getPlayer().getName()) != null) {
+                e.setCancelled(true);
+                e.getPlayer().disconnect(
+                        MessageUtils.format(this.plugin.getConfig().getString("messages.already-connected")));
+            }
+        }
+    }
+
+    @EventHandler
+    public void onServerConnected(final ServerConnectedEvent e) {
+        this.updatePlayerData(e.getPlayer().getName(), e.getPlayer().getServer().getInfo().getName());
     }
 
     @EventHandler

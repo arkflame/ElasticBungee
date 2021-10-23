@@ -1,12 +1,12 @@
-package dev._2lstudios.elasticbungee.api.broker;
+package dev._2lstudios.elasticbungee.redis;
 
-public class Message {
+public class RedisMessage {
 
     private final String channel;
     private final String source;
     private final String content;
 
-    public Message(final String channel, final String source, final String content) {
+    public RedisMessage(final String channel, final String source, final String content) {
         this.channel = channel;
         this.source = source;
         this.content = content;
@@ -24,8 +24,8 @@ public class Message {
         return this.content;
     }
 
-    public static Message fromString(final String raw) {
+    public static RedisMessage fromString(final String raw) {
         final String[] parts = raw.split("!!", 3);
-        return new Message(parts[0], parts[1], parts[2]);
+        return new RedisMessage(parts[0], parts[1], parts[2]);
     }
 }

@@ -1,15 +1,8 @@
-debug: false
 server:
   id: "my-bungee"
-sync-settings:
-  player-server-sync-threshold: 60
-storage-container:
-  driver: "redis"
-  host: "0.0.0.0"
-  port: 6379
-  password: ""
-message-broker:
-  driver: "redis"
+messages:
+  already-connected: "&cAlready connected to this server"
+redis:
   host: "0.0.0.0"
   port: 6379
   password: ""

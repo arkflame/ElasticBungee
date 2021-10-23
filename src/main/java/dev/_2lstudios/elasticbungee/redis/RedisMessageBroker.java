@@ -1,24 +1,19 @@
-package dev._2lstudios.elasticbungee.broker;
+package dev._2lstudios.elasticbungee.redis;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import dev._2lstudios.elasticbungee.ElasticBungee;
-import dev._2lstudios.elasticbungee.api.broker.Message;
-import dev._2lstudios.elasticbungee.api.broker.MessageBroker;
-import dev._2lstudios.elasticbungee.api.broker.Subscription;
-
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
 
-public class RedisMessageBroker implements MessageBroker {
-
+public class RedisMessageBroker {
     private static final String REDIS_CHANNEL = "ELASTIC_BUNGEE";
 
     private final Jedis provider; // Redis client used to receive packets.
     private final Jedis dispatcher; // Redis client used to send packets.
 
-    private final List<Subscription> subscriptions;
+    private final List<RedisSubscription> subscriptions;
 
     public RedisMessageBroker(final String host, final int port, final String password) {
         this.provider = new Jedis(host, port);
@@ -37,8 +32,8 @@ public class RedisMessageBroker implements MessageBroker {
                     @Override
                     public void onMessage(String messageChannel, String rawMessage) {
                         if (messageChannel.equalsIgnoreCase(REDIS_CHANNEL)) {
-                            for (final Subscription sub : subscriptions) {
-                                sub.onReceive(Message.fromString(rawMessage));
+                            for (final RedisSubscription sub : subscriptions) {
+                                sub.onReceive(RedisMessage.fromString(rawMessage));
                             }
                         }
                     }
@@ -47,14 +42,12 @@ public class RedisMessageBroker implements MessageBroker {
         }).start();
     }
 
-    @Override
     public void publish(final String channel, final String content) {
         final String server = ElasticBungee.getInstance().getServerID();
         this.dispatcher.publish(REDIS_CHANNEL, channel + "!!" + server + "!!" + content);
     }
 
-    @Override
-    public void subscribe(final Subscription subscription) {
+    public void subscribe(final RedisSubscription subscription) {
         this.subscriptions.add(subscription);
     }
 }
