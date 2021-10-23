@@ -63,7 +63,7 @@ public class ElasticBungee extends Plugin {
 
         // Setup sync modules
         this.onlineCountSync = new OnlineCountSync(this);
-        this.broker.subscribe(OnlineCountSync.CHANNEL, onlineCountSync);
+        this.broker.subscribe(onlineCountSync);
         this.getProxy().getPluginManager().registerListener(this, onlineCountSync);
         this.getLogger().log(Level.INFO, "Registered module OnlineCountSync");
 
@@ -72,7 +72,7 @@ public class ElasticBungee extends Plugin {
         this.getLogger().log(Level.INFO, "Registered module PlayerSync");
 
         this.broadcastSync = new BroadcastSync(this);
-        this.broker.subscribe(BroadcastSync.CHANNEL, broadcastSync);
+        this.broker.subscribe(broadcastSync);
         this.getLogger().log(Level.INFO, "Registered module BroadcastSync");
 
         // Register commands

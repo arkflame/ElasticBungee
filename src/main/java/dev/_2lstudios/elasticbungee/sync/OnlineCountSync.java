@@ -96,6 +96,10 @@ public class OnlineCountSync implements Listener, Subscription {
     /* Broker listener */
     @Override
     public void onReceive(final Message message) {
+        if (!message.getChannel().equals(CHANNEL)) {
+            return;
+        }
+
         final boolean isLocal = message.getSource().equals(this.plugin.getServerID());
         if (isLocal) {
             return;

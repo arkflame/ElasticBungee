@@ -21,6 +21,10 @@ public class BroadcastSync implements Subscription {
 
     @Override
     public void onReceive(final Message message) {
+        if (!message.getChannel().equals(CHANNEL)) {
+            return;
+        }
+
         this.plugin.getProxy().broadcast(
                 new ComponentBuilder(ChatColor.translateAlternateColorCodes('&', message.getContent())).create());
     }
