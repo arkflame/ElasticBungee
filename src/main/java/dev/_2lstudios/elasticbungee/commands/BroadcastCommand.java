@@ -14,8 +14,7 @@ public class BroadcastCommand {
 
     public void execute(CommandSender sender, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage(
-                    new ComponentBuilder("Please follow this command by a user name.").color(ChatColor.RED).create());
+            sender.sendMessage(new ComponentBuilder("Usage: /eb broadcast <message>").color(ChatColor.RED).create());
             return;
         }
 

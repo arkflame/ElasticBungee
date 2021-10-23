@@ -10,6 +10,8 @@ import dev._2lstudios.elasticbungee.sync.BroadcastSync;
 import dev._2lstudios.elasticbungee.sync.KickSync;
 import dev._2lstudios.elasticbungee.sync.OnlineCountSync;
 import dev._2lstudios.elasticbungee.sync.PlayerSync;
+import dev._2lstudios.elasticbungee.sync.SendAllSync;
+import dev._2lstudios.elasticbungee.sync.SendSync;
 import dev._2lstudios.elasticbungee.utils.ConfigUtils;
 import dev._2lstudios.elasticbungee.utils.StringUtils;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -28,6 +30,8 @@ public class ElasticBungee extends Plugin {
     private KickSync kickSync;
     private OnlineCountSync onlineCountSync;
     private PlayerSync playerSync;
+    private SendAllSync sendAllSync;
+    private SendSync sendSync;
 
     public void debug(final String message) {
         if (this.debug) {
@@ -72,6 +76,12 @@ public class ElasticBungee extends Plugin {
         this.playerSync = new PlayerSync(this);
         this.getProxy().getPluginManager().registerListener(this, playerSync);
         this.getLogger().log(Level.INFO, "Registered module PlayerSync");
+
+        this.sendAllSync = new SendAllSync(this);
+        this.sendSync = new SendSync(this);
+        this.broker.subscribe(sendAllSync);
+        this.broker.subscribe(sendSync);
+        this.getLogger().log(Level.INFO, "Registered module Send/AllSync");
 
         // Register commands
         this.getProxy().getPluginManager().registerCommand(this, new ElasticBungeeCommand(this));
@@ -129,6 +139,14 @@ public class ElasticBungee extends Plugin {
 
     public PlayerSync getPlayerSync() {
         return this.playerSync;
+    }
+
+    public SendAllSync getSendAllSync() {
+        return this.sendAllSync;
+    }
+
+    public SendSync getSendSync() {
+        return this.sendSync;
     }
 
     public String getServerID() {

@@ -13,6 +13,8 @@ public class ElasticBungeeCommand extends Command {
     private final FindCommand findCommand;
     private final KickCommand kickCommand;
     private final IPCommand ipCommand;
+    private final SendAllCommand sendAllCommand;
+    private final SendCommand sendCommand;
 
     private final String version;
 
@@ -23,6 +25,8 @@ public class ElasticBungeeCommand extends Command {
         this.findCommand = new FindCommand(plugin);
         this.kickCommand = new KickCommand(plugin);
         this.ipCommand = new IPCommand(plugin);
+        this.sendAllCommand = new SendAllCommand(plugin);
+        this.sendCommand = new SendCommand(plugin);
 
         this.version = plugin.getDescription().getVersion();
     }
@@ -58,6 +62,12 @@ public class ElasticBungeeCommand extends Command {
             break;
         case "ip":
             this.ipCommand.execute(sender, subArgs);
+            break;
+        case "sendall":
+            this.sendAllCommand.execute(sender, subArgs);
+            break;
+        case "send":
+            this.sendCommand.execute(sender, subArgs);
             break;
         default:
             MessageUtils.sendMessage(sender, "&cError: Subcommand " + subCommand + "doesn't exist.");

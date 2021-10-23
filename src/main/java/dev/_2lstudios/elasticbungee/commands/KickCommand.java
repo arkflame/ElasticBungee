@@ -15,7 +15,7 @@ public class KickCommand {
 
     public void execute(CommandSender sender, String[] args) {
         if (args.length <= 1) {
-            sender.sendMessage(new ComponentBuilder("Usage: /eb <player> <reason>").color(ChatColor.RED).create());
+            sender.sendMessage(new ComponentBuilder("Usage: /eb kick <player> <reason>").color(ChatColor.RED).create());
             return;
         }
 
