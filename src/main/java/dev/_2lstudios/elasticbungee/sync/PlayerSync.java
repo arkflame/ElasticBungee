@@ -1,6 +1,7 @@
 package dev._2lstudios.elasticbungee.sync;
 
 import java.net.InetSocketAddress;
+import java.util.concurrent.TimeUnit;
 
 import dev._2lstudios.elasticbungee.ElasticBungee;
 import dev._2lstudios.elasticbungee.sync.results.PlayerSyncResult;
@@ -22,6 +23,13 @@ public class PlayerSync implements Listener {
 
     public PlayerSync(final ElasticBungee plugin) {
         this.plugin = plugin;
+
+        plugin.getProxy().getScheduler().schedule(plugin, new Runnable() {
+            @Override
+            public void run() {
+                sync();
+            }
+        }, 1, 40, TimeUnit.SECONDS);
     }
 
     private void updatePlayerData(final String username, final String server, final String address) {
@@ -33,7 +41,7 @@ public class PlayerSync implements Listener {
         }
 
         final PlayerSyncResult result = new PlayerSyncResult(this.plugin.getServerID(), server, address);
-        this.plugin.getStorage().set(key, result.toString());
+        this.plugin.getStorage().set(key, result.toString(), 60);
     }
 
     public void syncPlayer(final ProxiedPlayer player, final String server) {

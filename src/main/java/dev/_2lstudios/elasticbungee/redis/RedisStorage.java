@@ -24,6 +24,10 @@ public class RedisStorage {
         this.client.set(key, value);
     }
 
+    public void set(String key, String value, int expiration) {
+        this.client.setex(key, expiration, value);
+    }
+
     public void delete(String key) {
         this.client.del(key);
     }
