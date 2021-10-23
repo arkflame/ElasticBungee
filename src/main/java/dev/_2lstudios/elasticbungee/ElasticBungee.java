@@ -78,6 +78,9 @@ public class ElasticBungee extends Plugin {
         // Register commands
         this.getProxy().getPluginManager().registerCommand(this, new ElasticBungeeCommand(this));
         this.getLogger().log(Level.INFO, "Registered elasticbungee command");
+
+        // Initialize if there are players online
+        this.playerSync.sync();
     }
 
     @Override
@@ -92,6 +95,11 @@ public class ElasticBungee extends Plugin {
             e.printStackTrace();
             this.getProxy().stop();
         }
+    }
+
+    @Override
+    public void onDisable() {
+        this.playerSync.cleanup();
     }
 
     public BroadcastSync getBroadcastSync() {

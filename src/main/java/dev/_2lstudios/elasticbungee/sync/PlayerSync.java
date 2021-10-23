@@ -1,9 +1,10 @@
 package dev._2lstudios.elasticbungee.sync;
 
 import dev._2lstudios.elasticbungee.ElasticBungee;
-
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.ServerConnectEvent;
+import net.md_5.bungee.api.event.ServerKickEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
@@ -22,10 +23,23 @@ public class PlayerSync implements Listener {
 
         if (server == null || server.isEmpty()) {
             this.plugin.getStorage().delete(key);
+            return;
         }
 
         final PlayerSyncResult result = new PlayerSyncResult(this.plugin.getServerID(), server);
         this.plugin.getStorage().set(key, result.toString());
+    }
+
+    public void sync() {
+        for (final ProxiedPlayer player : this.plugin.getProxy().getPlayers()) {
+            this.updatePlayerData(player.getName(), player.getServer().getInfo().getName());
+        }
+    }
+
+    public void cleanup() {
+        for (final ProxiedPlayer player : this.plugin.getProxy().getPlayers()) {
+            this.updatePlayerData(player.getName(), null);
+        }
     }
 
     public PlayerSyncResult getPlayer(final String username) {
@@ -44,6 +58,11 @@ public class PlayerSync implements Listener {
 
     @EventHandler
     public void onPlayerQuit(final PlayerDisconnectEvent e) {
+        this.updatePlayerData(e.getPlayer().getName(), null);
+    }
+
+    @EventHandler
+    public void onPlayerKick(final ServerKickEvent e) {
         this.updatePlayerData(e.getPlayer().getName(), null);
     }
 }
