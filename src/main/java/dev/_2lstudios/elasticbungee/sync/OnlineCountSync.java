@@ -141,6 +141,7 @@ public class OnlineCountSync implements Listener, RedisSubscription {
     @EventHandler
     public void onProxyPing(ProxyPingEvent e) {
         ServerPing ping = e.getResponse();
+        if (ping == null) return;
         ServerPing.Players current = ping.getPlayers();
         ping.setPlayers(new ServerPing.Players(current.getMax(), this.getTotalPlayerCount(), current.getSample()));
         e.setResponse(ping);
