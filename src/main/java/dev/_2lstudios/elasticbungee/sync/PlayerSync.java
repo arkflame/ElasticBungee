@@ -78,6 +78,10 @@ public class PlayerSync implements Listener {
 
     @EventHandler
     public void onPlayerPreLogin(final PreLoginEvent e) {
+        if (!this.plugin.getConfig().getBoolean("settings.prevent-existing-connection-another-proxy", false)) {
+            return;
+        }
+
         if (this.getPlayer(e.getConnection().getName()) != null) {
             final BaseComponent[] reason = MessageUtils
                     .format(this.plugin.getConfig().getString("messages.already-connected"));

@@ -1,8 +1,25 @@
+# Initial plugin configuration
+settings:
+  # If this option is enabled then connections from users who are connected to another proxy will be prevented. 
+  # That is, if a user is connected in proxy A, then when trying to connect with the same name through proxy B, they will be prevented. 
+  prevent-existing-connection-another-proxy: false
+
+# Explicit server configuration (For example Identification)
 server:
+  # How do you want the Proxy instance to identify itself? 
+  # If it is null a random ID will be generated.
   id: null
+
+# Messages that you may want to translate or change.
 messages:
   already-connected: "&cAlready connected to this server"
+
+# Redis server to be used for data exchange.
 redis:
   host: "127.0.0.1"
   port: 6379
   password: ""
+
+# For developers only:
+# This option will display each packet sent and received by ElasticBungee on the console.
+debug: false
